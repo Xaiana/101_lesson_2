@@ -1,13 +1,24 @@
+require 'yaml'
+MESSAGES = YAML.load_file('calculator_messages.yml')
+
 def prompt(message)
   puts("=>#{message}")
 end
 
+def integer?(num)
+/^\d+$/.match(num)
+end
+
+def float?(num)
+  /\d/.match(num) && /^\d*\.?\d*$/.match(num)
+end
+
 def valid_number?(num)
-  num.to_i != 0
+  integer?(num) || float?(num)
 end
 
 def operation_to_message(op)
-  case op
+  action = case op
   when '1'
     'Adding'
   when '2'
@@ -17,16 +28,17 @@ def operation_to_message(op)
   when '4'
     'Dividing'
   end
+  action
 end
 
-prompt("Welcome to calculator! Enter your name:")
+prompt(MESSAGES['welcome'])
 
 name = ''
 loop do
   name = gets.chomp
 
   if name.empty?
-    prompt("Please enter your name")
+    prompt(MESSAGES['valid_name'])
   else
     break
   end
@@ -37,25 +49,25 @@ prompt("Lets begin #{name}!")
 loop do # Main loop
   num1 = ''
   loop do
-    prompt("Choose a number")
+    prompt(MESSAGES['number'])
     num1 = gets.chomp
 
     if valid_number?(num1)
       break
     else
-      prompt("That is not a valid number please try again")
+      prompt(MESSAGES['valid_number'])
     end
   end
 
   num2 = ''
   loop do
-    prompt("Now choose another")
+    prompt(MESSAGES['number2'])
     num2 = gets.chomp
 
     if valid_number?(num2)
       break
     else
-      prompt("That is not a valid number please try again")
+      prompt(MESSAGES['valid_number'])
     end
   end
 
@@ -76,7 +88,7 @@ loop do # Main loop
     if %w(1 2 3 4).include?(action)
       break
     else
-      prompt("Must choose 1, 2, 3, or 4")
+      prompt(MESSAGES['valid_action_prompt'])
     end
   end
 
@@ -94,9 +106,9 @@ loop do # Main loop
             end
 
   prompt("The result is #{result}")
-  prompt("Do you want to perform another calculation? (Y to go again)")
+  prompt(MESSAGES['continue'])
   answer = gets.chomp
   break unless answer.downcase().start_with?('y')
 end
 
-prompt("Thank you for using calculator. Good bye!")
+prompt(MESSAGES['goodbye'])
