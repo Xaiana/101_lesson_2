@@ -1,9 +1,11 @@
-VALID_CHOICES = %w(rock paper scissors)
+VALID_CHOICES = %w(rock paper scissors spock lizard)
 
 def win?(first, second)
-  (first == 'rock'     && second == 'scissors') ||
-  (first == 'paper'    && second == 'rock') ||
-  (first == 'scissors' && second == 'paper')
+  (first == 'rock'     && (second == 'scissors' || second == 'lizard')) ||
+  (first == 'paper'    && (second == 'rock' || second == 'spock')) ||
+  (first == 'scissors' && (second == 'paper' || second == 'lizard')) ||
+  (first == 'lizard'   && (second == 'paper' || second == 'spock')) ||
+  (first == 'spock'   && (second == 'rock' || second == 'scissors'))
 end
 
 def display_results(player, computer)
@@ -26,6 +28,8 @@ end
 
 test_method
 
+player = 0
+computer = 0
 loop do
   choice = ''
   loop do
@@ -45,9 +49,22 @@ loop do
 
   display_results(choice, computer_choice)
 
-  prompt('Do you want to play again?')
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  if win?(choice, computer_choice)
+    player += 1
+  elsif win?(computer_choice, choice)
+    computer += 1
+  end
+
+  prompt("you: #{player}")
+  prompt("computer: #{computer}")
+
+  if player >= 5
+    prompt("You won the match!")
+    break
+  elsif computer >= 5
+    prompt("Computer won")
+    break
+  end
 end
 
 prompt('Thank you play again!')
